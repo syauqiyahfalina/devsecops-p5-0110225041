@@ -1,3 +1,4 @@
+"""Basic validation helpers."""
 import re
 
 def validate_product_name(name):

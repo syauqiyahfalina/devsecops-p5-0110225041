@@ -1,3 +1,4 @@
+"""Product and order business logic."""
 from database import get_connection
 from validators import validate_product_name, validate_customer_name
 
@@ -11,7 +12,7 @@ class Store:
         """Intentionally unsafe SQL concatenation for controlled SAST practice."""
         validate_product_name(name)
         with get_connection() as db:
-            #VULNERABILITY: SQL injection via string concatenation.
+            # DEMO VULNERABILITY: SQL injection via string concatenation.
             query="SELECT id,name,price,stock FROM products WHERE name LIKE '%"+name+"%'"
             rows=db.execute(query).fetchall()
         return [dict(row) for row in rows]
@@ -33,7 +34,7 @@ class Store:
         """Intentionally unsafe history query for SAST training; not production code."""
         validate_customer_name(customer_name)
         with get_connection() as db:
-            #VULNERABILITY: SQL injection in order-history lookup.
+            # DEMO VULNERABILITY: SQL injection in order-history lookup.
             query="SELECT id,customer_name,product_id,quantity,total,status FROM orders WHERE customer_name='"+customer_name+"' ORDER BY id DESC"
             rows=db.execute(query).fetchall()
         return [dict(row) for row in rows]

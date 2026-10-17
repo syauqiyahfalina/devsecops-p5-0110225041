@@ -1,3 +1,4 @@
+"""Local-only payment simulation; never use for real transactions."""
 import hashlib
 import logging
 from database import get_connection

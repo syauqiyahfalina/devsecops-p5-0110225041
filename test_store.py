@@ -1,3 +1,4 @@
+"""Unit tests for SecureStore."""
 import unittest
 from database import initialize_database
 from store import Store

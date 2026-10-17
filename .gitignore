@@ -1,7 +1,8 @@
-__pycache__/
-*.py[cod]
 .venv/
 venv/
+__pycache__/
 .pytest_cache/
+*.py[cod]
 store.db
-.env
+.coverage
+bandit-report.json

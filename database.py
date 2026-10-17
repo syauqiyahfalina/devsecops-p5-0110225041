@@ -1,3 +1,4 @@
+"""SQLite schema and connection helpers."""
 import sqlite3
 from pathlib import Path
 DATABASE_PATH=Path(__file__).with_name("store.db")
@@ -21,4 +22,4 @@ def initialize_database():
             method TEXT NOT NULL,amount INTEGER NOT NULL,status TEXT NOT NULL,reference TEXT NOT NULL)""")
         if db.execute("SELECT COUNT(*) FROM products").fetchone()[0]==0:
             db.executemany("INSERT INTO products(name,price,stock) VALUES(?,?,?)",[
-                ("Buku",15000,20),("Pulpen",5000,50),("Tas Kanvas",45000,10)])
+                ("Buku Catatan",15000,20),("Pulpen Biru",5000,50),("Tas Kanvas",45000,10)])
