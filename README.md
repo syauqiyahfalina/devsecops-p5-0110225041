@@ -1,32 +1,43 @@
-# SecureStore — Toko Sederhana untuk Praktikum SAST
+# SECURESTORE - Toko Alat Tulis Sederhana untuk Praktikum SAST
 
-SecureStore adalah aplikasi toko sederhana berbasis Python dengan database SQLite. Aplikasi menyediakan daftar dan pencarian produk, pembuatan pesanan, riwayat pesanan, serta simulasi pembayaran.
+**1. Deskripsi Aplikasi**
 
-> **Peringatan praktikum:** beberapa pola kode sengaja dibuat rentan untuk latihan analisis SAST, termasuk query SQL yang dirangkai dari input, MD5 untuk referensi demo, logging referensi pembayaran, dan nilai credential palsu. Aplikasi ini hanya untuk pembelajaran. Jangan gunakan untuk transaksi nyata atau lingkungan production.
+SecureStore adalah aplikasi toko alat tulis sederhana berbasis Python yang menggunakan database SQLite. Aplikasi ini menyediakan fitur melihat dan mencari produk, membuat pesanan, melihat riwayat pesanan, serta simulasi pembayaran. Proyek ini dibuat untuk memenuhi praktikum DevSecOps, khususnya penerapan Static Application Security Testing (SAST) menggunakan Bandit dan otomatisasi pengujian melalui GitHub Actions.
 
-## Teknologi yang digunakan
+**2. Teknologi yang Digunakan**
 
-- **Python** untuk logika aplikasi.
-- **SQLite** untuk menyimpan produk, pesanan, dan pembayaran simulasi.
-- **pytest** untuk menjalankan unit test.
-- **Bandit** untuk Static Application Security Testing (SAST) pada kode Python.
-- **GitHub Actions** untuk menjalankan pipeline otomatis saat ada `push` atau `pull_request` ke branch `main`.
+- **Python** : bahasa pemrograman untuk logika aplikasi.
+- **SQLite** : database untuk menyimpan data produk, pesanan, dan pembayaran simulasi.
+- **pytest** : menjalankan unit test aplikasi.
+- **Bandit** : alat SAST untuk menganalisis pola kode Python yang berpotensi menimbulkan masalah keamanan.
+- **GitHub Actions** : mengotomatisasi proses pengujian dan pemindaian keamanan kode.
 
-## Struktur proyek
+Aplikasi ini menggunakan Python tanpa framework aplikasi khusus.
 
-- `app.py`: menu utama aplikasi toko.
-- `store.py`: fungsi pencarian produk, pembuatan pesanan, dan riwayat pesanan.
-- `database.py`: pembuatan dan pengisian database SQLite.
-- `payments.py`: simulasi pembayaran.
-- `validators.py`: validasi input.
-- `config.py`: konfigurasi demo.
-- `test_store.py`: unit test aplikasi.
-- `requirements.txt`: dependensi Python.
-- `.github/workflows/devsecops.yml`: workflow CI dan pemindaian Bandit.
+**3. Struktur Proyek**
 
-## Cara menjalankan di Windows
+| File | Fungsi |
+|---|---|
+| `app.py` | Menjalankan menu utama aplikasi toko. |
+| `store.py` | Mengelola produk, pesanan, dan riwayat pesanan. |
+| `database.py` | Membuat dan mengelola database SQLite. |
+| `payments.py` | Menjalankan simulasi pembayaran. |
+| `validators.py` | Memvalidasi input pengguna. |
+| `config.py` | Menyediakan konfigurasi aplikasi demo. |
+| `test_store.py` | Berisi pengujian fungsi aplikasi. |
+| `requirements.txt` | Mencatat dependensi Python. |
+| `.github/workflows/devsecops.yml` | Mengatur pipeline GitHub Actions. |
 
-Pastikan Python sudah terpasang. Dari folder proyek, jalankan:
+**4. Cara Menjalankan Aplikasi**
+
+**~ Persyaratan**
+
+- Python sudah terpasang di komputer.
+- Terminal atau PowerShell tersedia.
+
+**~ Instalasi dan menjalankan aplikasi**
+
+Buka PowerShell pada folder proyek, lalu jalankan:
 
 ```powershell
 python -m venv .venv
@@ -35,37 +46,63 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
-Jika PowerShell memblokir aktivasi virtual environment, kamu dapat langsung menggunakan `python -m pip` tanpa mengaktifkannya.
+Jika aktivasi virtual environment diblokir oleh PowerShell, sesuaikan kebijakan aktivasi atau gunakan interpreter Python dari environment yang sudah tersedia.
 
-## Menjalankan pengujian
+**~ Menjalankan unit test**
+
+Untuk memeriksa fungsi aplikasi, jalankan:
 
 ```powershell
 python -m pytest -v
 ```
 
-## Menjalankan Bandit secara lokal
+**~ Menjalankan pemindaian Bandit secara lokal**
 
 ```powershell
 python -m bandit -r . -x ./test_store.py,./.venv,./venv,./__pycache__
 ```
 
-Untuk menghasilkan laporan JSON:
+**~ Untuk menyimpan hasil pemindaian ke file JSON:**
 
 ```powershell
 python -m bandit -r . -x ./test_store.py,./.venv,./venv,./__pycache__ -f json -o bandit-report.json
 ```
 
-Bandit dapat mengembalikan kode keluar nonzero ketika menemukan temuan sesuai aturan pemindaiannya. Itu tidak berarti file laporan gagal dibuat. Tinjau setiap temuan sebelum menentukan remediasi; Bandit tidak menjamin semua jenis kerentanan akan terdeteksi.
+Bandit dapat mengembalikan kode keluar nonzero jika menemukan temuan sesuai aturan pemindaiannya. Setiap temuan perlu ditinjau sebelum menentukan tindakan perbaikan.
 
-## Pipeline GitHub Actions
+**5. Overview Pipeline CI/CD**
 
-Workflow `.github/workflows/devsecops.yml` berjalan pada `push` dan `pull_request` ke branch `main`, dengan dua job:
+Pipeline DevSecOps diimplementasikan menggunakan GitHub Actions melalui file `.github/workflows/devsecops.yml`.
 
-1. `build`: memasang dependensi dan menjalankan unit test.
-2. `sast-scan`: berjalan setelah `build` berhasil, memindai kode Python menggunakan Bandit, dan mencoba mengunggah `bandit-report.json` sebagai artifact.
+Workflow dikonfigurasi agar berjalan ketika terdapat:
 
-Setelah workflow berjalan, buka tab **Actions**, pilih eksekusi workflow, lalu unduh artifact **`bandit-security-report`** pada halaman ringkasan jika proses upload berhasil. Langkah upload menggunakan `if: always()` agar tetap dicoba walaupun pemindaian gagal. Artifact tetap membutuhkan file laporan yang berhasil dibuat.
+- `push` ke branch `main`.
+- `pull_request` yang menargetkan branch `main`.
 
-## Temuan keamanan untuk pembelajaran
+Pipeline memiliki dua job utama:
 
-Beberapa pola rentan sengaja disertakan agar dapat dianalisis. Gunakan hasil Bandit yang benar-benar muncul di eksekusi kamu sebagai bukti laporan. Jangan menganggap setiap kelemahan pasti terdeteksi oleh Bandit.
+**-> Job 1 — Build and Unit Tests**
+
+Job ini berjalan menggunakan runner `ubuntu-latest`. Prosesnya meliputi checkout repository, menyiapkan Python, memasang dependensi, dan menjalankan unit test menggunakan pytest.
+
+**-> Job 2 — Bandit SAST Scan**
+
+Job ini berjalan setelah job `build` berhasil melalui konfigurasi `needs: build`. Bandit digunakan untuk memindai kode Python dan mendeteksi pola yang berpotensi menimbulkan masalah keamanan.
+
+**-> Quality Gate**
+
+Quality Gate diterapkan melalui aturan tingkat keparahan dan confidence temuan Bandit pada workflow. Jika hasil pemindaian memenuhi ambang yang ditetapkan, job SAST dapat gagal sehingga masalah keamanan perlu ditinjau sebelum pipeline dinyatakan berhasil.
+
+Hasil pemindaian dapat diunggah sebagai artifact bernama `bandit-security-report` apabila langkah pembuatan laporan dan pengunggahan berhasil.
+
+**-> Memeriksa hasil pipeline**
+
+1. Buka repository SecureStore di GitHub.
+2. Pilih tab **_Actions_**.
+3. Pilih eksekusi workflow yang ingin diperiksa.
+4. Periksa status job build dan Bandit SAST Scan.
+5. Jika tersedia, unduh artifact laporan Bandit untuk memeriksa hasil pemindaian.
+
+**6. Tujuan Praktikum**
+
+Proyek SecureStore menunjukkan penerapan dasar DevSecOps dengan menggabungkan unit testing, SAST, dan Quality Gate ke dalam pipeline otomatis. Melalui praktikum ini, mahasiswa dapat mempelajari proses pengujian aplikasi, menganalisis temuan keamanan, dan memahami pentingnya pemeriksaan keamanan sebelum kode digunakan lebih lanjut.
