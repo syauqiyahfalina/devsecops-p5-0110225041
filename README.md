@@ -81,11 +81,11 @@ Workflow dikonfigurasi agar berjalan ketika terdapat:
 
 Pipeline memiliki dua job utama:
 
-**-> Job 1 — Build and Unit Tests**
+**-> Job 1 : Build and Unit Tests**
 
 Job ini berjalan menggunakan runner `ubuntu-latest`. Prosesnya meliputi checkout repository, menyiapkan Python, memasang dependensi, dan menjalankan unit test menggunakan pytest.
 
-**-> Job 2 — Bandit SAST Scan**
+**-> Job 2 : Bandit SAST Scan**
 
 Job ini berjalan setelah job `build` berhasil melalui konfigurasi `needs: build`. Bandit digunakan untuk memindai kode Python dan mendeteksi pola yang berpotensi menimbulkan masalah keamanan.
 
